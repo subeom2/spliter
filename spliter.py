@@ -22,22 +22,22 @@ print(aws_access_key_id)
 print(aws_secret_access_key)
 print(serverUrl)
 
-if not os.path.exists("spliter/movie"):
-    os.mkdir("spliter/movie")
-if not os.path.exists("spliter/sub"):
-    os.mkdir("spliter/sub")
-if not os.path.exists("spliter/splited-movie"):
-    os.mkdir("spliter/splited-movie")
-if not os.path.exists("spliter/splited-subtitles"):
-    os.mkdir("spliter/splited-subtitles")
+if not os.path.exists("movie"):
+    os.mkdir("movie")
+if not os.path.exists("sub"):
+    os.mkdir("sub")
+if not os.path.exists("splited-movie"):
+    os.mkdir("splited-movie")
+if not os.path.exists("splited-subtitles"):
+    os.mkdir("splited-subtitles")
 
 # S3 클라이언트 생성
 s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
 
 # S3에 저장된 자막 파일을 다운로드
-s3.download_file(bucketName, subFileName, f"spliter/sub/{subFileName}")
+s3.download_file(bucketName, subFileName, f"sub/{subFileName}")
 
-with open(f"spliter/sub/{subFileName}", "r", encoding='UTF-8') as f:
+with open(f"sub/{subFileName}", "r", encoding='UTF-8') as f:
         sub = f.readlines()
 
 for i in range(len(sub)):
@@ -88,21 +88,21 @@ for i in range(len(result)):
 for i in range(len(subtitleList)):
     subtitleList[i].insert(0, i+1)
 
-with open(f"spliter/splited-subtitles/{subFileName}.json", "w", encoding='UTF-8') as f:
+with open(f"splited-subtitles/{subFileName}.json", "w", encoding='UTF-8') as f:
     # f.write(str(subtitleList))
     json.dump(subtitleList, f, ensure_ascii=False, indent=4)
 
 # S3에 저장된 영화파일을 다운로드
-s3.download_file(bucketName, movieFileName, f"spliter/movie/{movieFileName}")
+s3.download_file(bucketName, movieFileName, f"movie/{movieFileName}")
 
-with open(f"spliter/splited-subtitles/{subFileName}.json", "r", encoding='UTF-8') as f:
+with open(f"splited-subtitles/{subFileName}.json", "r", encoding='UTF-8') as f:
         sub = f.read()
 
 sub = json.loads(sub)
 
 print(type(sub))
 
-clip = VideoFileClip(f"spliter/movie/{movieFileName}")
+clip = VideoFileClip(f"movie/{movieFileName}")
 print("clip")
 for ii, e in enumerate(sub):
     print("split start")
@@ -113,10 +113,10 @@ for ii, e in enumerate(sub):
     suffix = lineResJson["fileSuffix"]
     temp = clip.subclip(e[1], e[2])
     temp.write_videofile(
-        f"spliter/splited-movie/{suffix}.mp4", fps=24)
+        f"splited-movie/{suffix}.mp4", fps=24)
     
     # 업로드할 파일 경로와 S3 버킷 이름 설정
-    local_file_path = f"spliter/splited-movie/{suffix}.mp4"
+    local_file_path = f"splited-movie/{suffix}.mp4"
     s3_bucket_name = "every-lines-movies" # 버킷 이름
     s3_object_key = f'public/{suffix}.mp4'  # S3 버킷 내에서 파일의 경로와 이름
 
