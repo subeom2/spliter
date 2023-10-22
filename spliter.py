@@ -19,6 +19,9 @@ serverUrl = sys.argv[7]
 ec2Number = os.environ.get("EMP_NO")
 
 try :
+    telegram_chat_url = f"https://api.telegram.org/bot6370445519:AAETeQENUJGL1Lg9jws2rtCeJ-SsUwjdudI/sendMessage?chat_id=6507981466&text={movieId}_{movieFileName}_담당직원{ec2Number}호: 프로세스 시작"
+    telegram_chat_url_RES = requests.post(telegram_chat_url)
+
     print("movieId: ",movieId)
     print("movieFileName: ",movieFileName)
     print("subFileName: ",subFileName)
