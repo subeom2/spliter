@@ -139,10 +139,13 @@ try :
             raise Exception("업로드 실패")
             
         print(movieId, ii+1)
+    
+    print("split end")
+    telegram_chat_url = f"https://api.telegram.org/bot6370445519:AAETeQENUJGL1Lg9jws2rtCeJ-SsUwjdudI/sendMessage?chat_id=6507981466&text={movieId}_{movieFileName}_담당직원{ec2Number}호: 완료"
+    telegram_chat_url_RES = requests.post(telegram_chat_url)
+    
 except Exception as e:
     telegram_chat_url = f"https://api.telegram.org/bot6370445519:AAETeQENUJGL1Lg9jws2rtCeJ-SsUwjdudI/sendMessage?chat_id=6507981466&text={movieId}_{movieFileName}_담당직원{ec2Number}호: 오류 발생"
     telegram_chat_url_RES = requests.post(telegram_chat_url)
     print(e)
-finally:
-    telegram_chat_url = f"https://api.telegram.org/bot6370445519:AAETeQENUJGL1Lg9jws2rtCeJ-SsUwjdudI/sendMessage?chat_id=6507981466&text={movieId}_{movieFileName}_담당직원{ec2Number}호: 완료"
-    telegram_chat_url_RES = requests.post(telegram_chat_url)
+    
